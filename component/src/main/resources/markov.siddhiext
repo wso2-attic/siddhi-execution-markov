@@ -16,4 +16,4 @@
 # under the License.
 #
 
-markovChain=org.wso2.siddhi.extension.markov.MarkovChainStreamProcessor
+markovChain=org.wso2.extension.siddhi.execution.markov.MarkovChainStreamProcessor
