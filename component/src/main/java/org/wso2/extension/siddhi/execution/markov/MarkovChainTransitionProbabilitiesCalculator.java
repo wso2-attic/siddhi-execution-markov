@@ -21,17 +21,17 @@ package org.wso2.extension.siddhi.execution.markov;
 import org.apache.log4j.Logger;
 import org.wso2.siddhi.core.exception.OperationNotSupportedException;
 
-import java.io.Serializable;
-import java.io.FileInputStream;
 import java.io.BufferedInputStream;
-import java.io.InputStreamReader;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.Closeable;
-import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This includes the markov matrix probability calculation functionalities.
