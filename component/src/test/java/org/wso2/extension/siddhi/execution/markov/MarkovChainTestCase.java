@@ -19,10 +19,10 @@
 package org.wso2.extension.siddhi.execution.markov;
 
 import org.apache.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.wso2.siddhi.core.ExecutionPlanRuntime;
+import org.testng.AssertJUnit;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.wso2.siddhi.core.SiddhiAppRuntime;
 import org.wso2.siddhi.core.SiddhiManager;
 import org.wso2.siddhi.core.event.Event;
 import org.wso2.siddhi.core.query.output.callback.QueryCallback;
@@ -30,6 +30,7 @@ import org.wso2.siddhi.core.stream.input.InputHandler;
 import org.wso2.siddhi.core.util.EventPrinter;
 
 import java.util.concurrent.CountDownLatch;
+
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
@@ -38,14 +39,14 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * MarkovChain continues training.
  * MarkovChain discontinues training.
  */
-public class MarkovChainTestcase {
-    private static final Logger logger = Logger.getLogger(MarkovChainTestcase.class);
+public class MarkovChainTestCase {
+    private static final Logger logger = Logger.getLogger(MarkovChainTestCase.class);
     protected static SiddhiManager siddhiManager;
     private CountDownLatch countDownLatch;
     private volatile int count;
     private volatile boolean eventArrived;
 
-    @Before
+    @BeforeMethod
     public void init() {
         count = 0;
         eventArrived = false;
@@ -55,8 +56,8 @@ public class MarkovChainTestcase {
     public void testMarkovChainPopulatingMatrixFromFile() throws Exception {
         logger.info("MarkovChain populating matrix from file test case.");
 
-        final int EXPECTED_NO_OF_EVENTS = 11;
-        countDownLatch = new CountDownLatch(EXPECTED_NO_OF_EVENTS);
+        final int expectedNoOfEvents = 11;
+        countDownLatch = new CountDownLatch(expectedNoOfEvents);
         siddhiManager = new SiddhiManager();
         String inputStream = "define stream InputStream (id string, state string);";
 
@@ -67,8 +68,8 @@ public class MarkovChainTestcase {
                 + "from InputStream#markov:markovChain(id, state, 60 min, 0.2, \'" + markovMatrixStorageLocation
                 + "\', false) " + "select id, lastState, state, transitionProbability, notify "
                 + "insert into OutputStream;");
-        ExecutionPlanRuntime executionPlanRuntime = siddhiManager
-                .createExecutionPlanRuntime(inputStream + executionPlan);
+        SiddhiAppRuntime executionPlanRuntime = siddhiManager
+                .createSiddhiAppRuntime(inputStream + executionPlan);
 
         executionPlanRuntime.addCallback("query1", new QueryCallback() {
             @Override
@@ -80,51 +81,51 @@ public class MarkovChainTestcase {
                     count++;
                     switch (count) {
                         case 1:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 2:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 3:
-                            Assert.assertEquals(0.3, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.3, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 4:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 5:
-                            Assert.assertEquals(0.6, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.6, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 6:
-                            Assert.assertEquals(0.6000000000000001, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.6000000000000001, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 7:
-                            Assert.assertEquals(0.6, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.6, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 8:
-                            Assert.assertEquals(0.3, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.3, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 9:
-                            Assert.assertEquals(0.3, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.3, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 10:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 11:
-                            Assert.assertEquals(0.3, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.3, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         default:
-                            Assert.fail();
+                            AssertJUnit.fail();
                     }
                 }
             }
@@ -146,8 +147,8 @@ public class MarkovChainTestcase {
         inputHandler.send(new Object[]{"4", "testState03"});
 
         countDownLatch.await(1000, MILLISECONDS);
-        Assert.assertEquals("Number of success events", 11, count);
-        Assert.assertEquals("Event arrived", true, eventArrived);
+        AssertJUnit.assertEquals("Number of success events", 11, count);
+        AssertJUnit.assertEquals("Event arrived", true, eventArrived);
         executionPlanRuntime.shutdown();
     }
 
@@ -155,8 +156,8 @@ public class MarkovChainTestcase {
     public void testMarkovChainContinuesTraining() throws Exception {
         logger.info("MarkovChain continues training test case.");
 
-        final int EXPECTED_NO_OF_EVENTS = 6;
-        countDownLatch = new CountDownLatch(EXPECTED_NO_OF_EVENTS);
+        final int expectedNoOfEvents = 6;
+        countDownLatch = new CountDownLatch(expectedNoOfEvents);
         siddhiManager = new SiddhiManager();
         String inputStream = "define stream InputStream (id string, state string);";
 
@@ -164,8 +165,8 @@ public class MarkovChainTestcase {
                 + "from InputStream#markov:markovChain(id, state, 60 min, 0.2, 5) "
                 + "select id, lastState, state, transitionProbability, notify "
                 + "insert into OutputStream;");
-        ExecutionPlanRuntime executionPlanRuntime = siddhiManager
-                .createExecutionPlanRuntime(inputStream + executionPlan);
+        SiddhiAppRuntime executionPlanRuntime = siddhiManager
+                .createSiddhiAppRuntime(inputStream + executionPlan);
 
         executionPlanRuntime.addCallback("query1", new QueryCallback() {
             @Override
@@ -177,31 +178,31 @@ public class MarkovChainTestcase {
                     count++;
                     switch (count) {
                         case 1:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(true, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(true, event.getData(4));
                             break;
                         case 2:
-                            Assert.assertEquals(0.5, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.5, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 3:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(true, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(true, event.getData(4));
                             break;
                         case 4:
-                            Assert.assertEquals(0.3333333333333333, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.3333333333333333, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 5:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 6:
-                            Assert.assertEquals(0.5, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.5, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         default:
-                            Assert.fail();
+                            AssertJUnit.fail();
                     }
                 }
             }
@@ -223,8 +224,8 @@ public class MarkovChainTestcase {
         inputHandler.send(new Object[]{"4", "testState03"});
 
         countDownLatch.await(1000, MILLISECONDS);
-        Assert.assertEquals("Number of success events", 6, count);
-        Assert.assertEquals("Event arrived", true, eventArrived);
+        AssertJUnit.assertEquals("Number of success events", 6, count);
+        AssertJUnit.assertEquals("Event arrived", true, eventArrived);
         executionPlanRuntime.shutdown();
     }
 
@@ -232,8 +233,8 @@ public class MarkovChainTestcase {
     public void testMarkovChainDiscontinuesTraining() throws Exception {
         logger.info("MarkovChain discontinues training test case");
 
-        final int EXPECTED_NO_OF_EVENTS = 6;
-        countDownLatch = new CountDownLatch(EXPECTED_NO_OF_EVENTS);
+        final int expectedNoOfEvents = 6;
+        countDownLatch = new CountDownLatch(expectedNoOfEvents);
         siddhiManager = new SiddhiManager();
         String inputStream = "define stream InputStream (id string, state string, train bool);";
 
@@ -241,8 +242,8 @@ public class MarkovChainTestcase {
                 + "from InputStream#markov:markovChain(id, state, 60 min, 0.2, 5, train) "
                 + "select id, lastState, state, transitionProbability, notify "
                 + "insert into OutputStream;");
-        ExecutionPlanRuntime executionPlanRuntime = siddhiManager
-                .createExecutionPlanRuntime(inputStream + executionPlan);
+        SiddhiAppRuntime executionPlanRuntime = siddhiManager
+                .createSiddhiAppRuntime(inputStream + executionPlan);
 
         executionPlanRuntime.addCallback("query1", new QueryCallback() {
             @Override
@@ -254,31 +255,31 @@ public class MarkovChainTestcase {
                     count++;
                     switch (count) {
                         case 1:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(true, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(true, event.getData(4));
                             break;
                         case 2:
-                            Assert.assertEquals(0.5, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.5, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 3:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(true, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(true, event.getData(4));
                             break;
                         case 4:
-                            Assert.assertEquals(0.3333333333333333, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.3333333333333333, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 5:
-                            Assert.assertEquals(0.0, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.0, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         case 6:
-                            Assert.assertEquals(0.3333333333333333, event.getData(3));
-                            Assert.assertEquals(false, event.getData(4));
+                            AssertJUnit.assertEquals(0.3333333333333333, event.getData(3));
+                            AssertJUnit.assertEquals(false, event.getData(4));
                             break;
                         default:
-                            Assert.fail();
+                            AssertJUnit.fail();
                     }
                 }
             }
@@ -300,8 +301,8 @@ public class MarkovChainTestcase {
         inputHandler.send(new Object[]{"4", "testState03", false});
 
         countDownLatch.await(1000, MILLISECONDS);
-        Assert.assertEquals("Number of success events", 6, count);
-        Assert.assertEquals("Event arrived", true, eventArrived);
+        AssertJUnit.assertEquals("Number of success events", 6, count);
+        AssertJUnit.assertEquals("Event arrived", true, eventArrived);
         executionPlanRuntime.shutdown();
     }
 
