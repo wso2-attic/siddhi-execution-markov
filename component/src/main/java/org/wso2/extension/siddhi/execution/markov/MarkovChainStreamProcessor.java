@@ -128,7 +128,7 @@ import java.util.Map;
                                 "\n" +
                                 "define stream InputStream (id string, state string);\n" +
                                 "from InputStream#markov:markovChain(id, state, 60 min, 0.2, " +
-                                "“markovMatrixStorageLocation”, false)\n" +
+                                "\"markovMatrixStorageLocation\", false)\n" +
                                 "select id, lastState, state, transitionProbability, notify\n" +
                                 "insert into OutputStream;"
                 )
