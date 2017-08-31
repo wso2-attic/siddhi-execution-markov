@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -181,7 +182,7 @@ public class MarkovChainTransitionProbabilitiesCalculator implements Serializabl
 
             fileInputStream = new FileInputStream(file);
             bufferedInputStream = new BufferedInputStream(fileInputStream);
-            bufferedReader = new BufferedReader(new InputStreamReader(bufferedInputStream));
+            bufferedReader = new BufferedReader(new InputStreamReader(bufferedInputStream , StandardCharsets.UTF_8));
             int rowNumber = 0;
             String row = bufferedReader.readLine();
             if (row != null) {
