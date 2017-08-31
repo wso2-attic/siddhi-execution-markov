@@ -1,0 +1,474 @@
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <link rel="shortcut icon" href="../../images/favicon.ico">
+      
+      <meta name="generator" content="mkdocs-0.16.3, mkdocs-material-1.9.0">
+    
+    
+      
+        <title>4.0.3-SNAPSHOT - Siddhi-Execution-Markov</title>
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr-e826f8942a.js"></script>
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application-0a3554af36.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/application-02c2a4388f.palette.css">
+      
+    
+    
+      
+        
+        
+        
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    
+  </head>
+  
+  
+  
+  
+    <body data-md-color-primary="teal" data-md-color-accent="teal">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="drawer">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="search">
+    <label class="md-overlay" data-md-component="overlay" for="drawer"></label>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <a href="../.." title="Siddhi-Execution-Markov" class="md-logo md-header-nav__button">
+            <img src="../../images/siddhi-logo-w.svg" width="24" height="24">
+          </a>
+        
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <span class="md-flex__ellipsis md-header-nav__title">
+          
+            
+              
+                <span class="md-header-nav__parent">
+                  API Docs
+                </span>
+              
+            
+            4.0.3-SNAPSHOT
+          
+        </span>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="search"></label>
+  <div class="md-search__inner">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" required placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query">
+      <label class="md-icon md-search__icon" for="search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset">&#xE5CD;</button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result" data-md-lang-search="" data-md-lang-tokenizer="[\s\-]+">
+          <div class="md-search-result__meta" data-md-lang-result-none="No matching documents" data-md-lang-result-one="1 matching document" data-md-lang-result-other="# matching documents">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="drawer">
+    
+      <i class="md-logo md-nav__button">
+        <img src="../../images/siddhi-logo-w.svg">
+      </i>
+    
+    Siddhi-Execution-Markov
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Welcome to Siddhi Execution Extension - Markov" class="md-nav__link">
+      Welcome to Siddhi Execution Extension - Markov
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../license/" title="License" class="md-nav__link">
+      License
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" checked>
+    
+    <label class="md-nav__link" for="nav-3">
+      API Docs
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        API Docs
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="toc">
+        4.0.3-SNAPSHOT
+      </label>
+    
+    <a href="./" title="4.0.3-SNAPSHOT" class="md-nav__link md-nav__link--active">
+      4.0.3-SNAPSHOT
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#markov" title="Markov" class="md-nav__link">
+    Markov
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#markovchain-stream-processor" title="markovChain (Stream Processor" class="md-nav__link">
+    markovChain (Stream Processor
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#markov" title="Markov" class="md-nav__link">
+    Markov
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#markovchain-stream-processor" title="markovChain (Stream Processor" class="md-nav__link">
+    markovChain (Stream Processor
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="api-docs">API Docs</h1>
+<h2 id="markov">Markov</h2>
+<h3 id="markovchain-stream-processor">markovChain <em>(<a target="_blank" href="https://wso2.github.io/siddhi/documentation/siddhi-4.0/#stream-processors">Stream Processor</a>)</em></h3>
+<p style="word-wrap: break-word">The Markov Models extension allows abnormal patterns relating to user activity to be detected when carrying out real time analysis. There are two approaches for using this extension.1. You can input an existing Markov matrix as a csv file. It should be a N x N matrix,    and the first row should include state names.2. You can use a reasonable amount of incoming data to train a Markov matrix and then using it to   create notifications.</p>
+
+<p><span id="syntax" class="md-typeset" style="display: block; font-weight: bold;">Syntax</span></p>
+<pre><code>markov:markovChain(&lt;STRING&gt; id, &lt;STRING&gt; state, &lt;INT|LONG&gt; duration.to.keep, &lt;DOUBLE&gt; alert.threshold, &lt;INT|LONG|STRING&gt; matrix.location.or.notifications.limit, &lt;BOOL&gt; train)
+</code></pre>
+
+<p><span id="query-parameters" class="md-typeset" style="display: block; color: rgba(0, 0, 0, 0.54); font-size: 12.8px; font-weight: bold;">QUERY PARAMETERS</span>
+<table>
+    <tr>
+        <th>Name</th>
+        <th style="min-width: 20em">Description</th>
+        <th>Default Value</th>
+        <th>Possible Data Types</th>
+        <th>Optional</th>
+        <th>Dynamic</th>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">id</td>
+        <td style="vertical-align: top; word-wrap: break-word">The ID of the particular user or object being analyzed.</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">STRING</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">state</td>
+        <td style="vertical-align: top; word-wrap: break-word">The current state of the ID.</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">STRING</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">duration.to.keep</td>
+        <td style="vertical-align: top; word-wrap: break-word">The maximum time duration to be considered for a continuous state change of a particular ID.</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">INT<br>LONG</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">alert.threshold</td>
+        <td style="vertical-align: top; word-wrap: break-word">The alert threshold probability.</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">DOUBLE</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">matrix.location.or.notifications.limit</td>
+        <td style="vertical-align: top; word-wrap: break-word">The location of the CSV file that contains the existing Markov matrix to be used (string) or the notifications hold limit (int/long)</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">INT<br>LONG<br>STRING</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">train</td>
+        <td style="vertical-align: top; word-wrap: break-word">If this is set to true, event values are used to train the Markov matrix. If this is set to false, the Markov matrix values remain the same.</td>
+        <td style="vertical-align: top">true</td>
+        <td style="vertical-align: top">BOOL</td>
+        <td style="vertical-align: top">Yes</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+</table>
+<span id="extra-return-attributes" class="md-typeset" style="display: block; font-weight: bold;">Extra Return Attributes</span>
+<table>
+    <tr>
+        <th>Name</th>
+        <th style="min-width: 20em">Description</th>
+        <th>Possible Types</th>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">lastState</td>
+        <td style="vertical-align: top; word-wrap: break-word">The previous state of the particular ID.</td>
+        <td style="vertical-align: top">STRING</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">transitionProbability</td>
+        <td style="vertical-align: top; word-wrap: break-word">The transition probability between the previous state and the current state for a particular ID.</td>
+        <td style="vertical-align: top">DOUBLE</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">notify</td>
+        <td style="vertical-align: top; word-wrap: break-word">This signifies a notification that indicates that the transition probability is less than or equal to the alert threshold probability.</td>
+        <td style="vertical-align: top">BOOL</td>
+    </tr>
+</table></p>
+<p><span id="examples" class="md-typeset" style="display: block; font-weight: bold;">Examples</span>
+<span id="example-1" class="md-typeset" style="display: block; color: rgba(0, 0, 0, 0.54); font-size: 12.8px; font-weight: bold;">EXAMPLE 1</span></p>
+<pre><code>markov:markovChain(&lt;String&gt; id, &lt;String&gt; state, &lt;int|long|time&gt; durationToKeep, &lt;double&gt; alertThreshold, &lt;String&gt; markovMatrixStorageLocation, &lt;boolean&gt; train)
+</code></pre>
+
+<p style="word-wrap: break-word">The following returns notifications to indicate whether a transition probability is less than or equal to 0.2 according to the Markov matrix you have provided. <br>define stream InputStream (id string, state string);<br>from InputStream#markov:markovChain(id, state, 60 min, 0.2, "markovMatrixStorageLocation", false)<br>select id, lastState, state, transitionProbability, notify<br>insert into OutputStream;</p>
+                
+                  
+                
+              
+              
+                
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../../license/" title="License" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                License
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="http://www.mkdocs.org" title="MkDocs">MkDocs</a>
+        and
+        <a href="http://squidfunk.github.io/mkdocs-material/" title="Material for MkDocs">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application-3700c4cc12.js"></script>
+      
+      
+      <script>app.initialize({url:{base:"../.."}})</script>
+      
+        <script src="../../javascripts/extra.js"></script>
+      
+    
+    
+      
+      <script>!function(e,t,a,n,o,c,i){e.GoogleAnalyticsObject=o,e[o]=e[o]||function(){(e[o].q=e[o].q||[]).push(arguments)},e[o].l=1*new Date,c=t.createElement(a),i=t.getElementsByTagName(a)[0],c.async=1,c.src=n,i.parentNode.insertBefore(c,i)}(window,document,"script","https://www.google-analytics.com/analytics.js","ga"),ga("create","UA-103065-28","auto"),ga("set","anonymizeIp",!0),ga("send","pageview");var links=document.getElementsByTagName("a");Array.prototype.map.call(links,function(e){e.host!=document.location.host&&e.addEventListener("click",function(){var t=e.getAttribute("data-md-action")||"follow";ga("send","event","outbound",t,e.href)})});var query=document.forms.search.query;query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})</script>
+      
+    
+  </body>
+</html>
