@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * StreamProcessor which implements the following function.
  * <code>markovChain( id, state, durationToKeep, alertThreshold,
@@ -140,7 +141,7 @@ public class MarkovChainStreamProcessor extends StreamProcessor implements Sched
     private static final String TRAINING_OPTION = "TRAINING_OPTION";
     private static final String TRAINING_OPTION_EXPRESSION_EXECUTOR = "TRAINING_OPTION_EXPRESSION_EXECUTOR";
     private static final String LAST_SCHEDULED_TIME = "LAST_SCHEDULED_TIME";
-    private Scheduler scheduler;
+    private Scheduler scheduler = null;
     private long durationToKeep;
     private long notificationsHoldLimit;
     private String markovMatrixStorageLocation;
@@ -263,8 +264,9 @@ public class MarkovChainStreamProcessor extends StreamProcessor implements Sched
                     continue;
                 }
                 lastScheduledTime = siddhiAppContext.getTimestampGenerator().currentTime() + durationToKeep;
-                scheduler.notifyAt(lastScheduledTime);
-
+                if (scheduler != null) {
+                    scheduler.notifyAt(lastScheduledTime);
+                }
                 if (trainingOptionExpressionExecutor != null) {
                     trainingOption = (Boolean) attributeExpressionExecutors[5].execute(streamEvent);
                 }
@@ -295,31 +297,40 @@ public class MarkovChainStreamProcessor extends StreamProcessor implements Sched
 
     @Override
     public Map<String, Object> currentState() {
-        Map<String, Object> state = new HashMap<>(4);
-        state.put(PROBABILITIES_CALCULATOR, markovChainTransitionProbabilitiesCalculator);
-        state.put(TRAINING_OPTION, trainingOption);
-        state.put(TRAINING_OPTION_EXPRESSION_EXECUTOR, trainingOptionExpressionExecutor);
-        state.put(LAST_SCHEDULED_TIME, lastScheduledTime);
-        return state;
+        synchronized (this) {
+            Map<String, Object> state = new HashMap<>(4);
+            state.put(PROBABILITIES_CALCULATOR, markovChainTransitionProbabilitiesCalculator);
+            state.put(TRAINING_OPTION, trainingOption);
+            state.put(TRAINING_OPTION_EXPRESSION_EXECUTOR, trainingOptionExpressionExecutor);
+            state.put(LAST_SCHEDULED_TIME, lastScheduledTime);
+
+            return state;
+        }
     }
 
     @Override
     public void restoreState(Map<String, Object> map) {
-        markovChainTransitionProbabilitiesCalculator =
-                (MarkovChainTransitionProbabilitiesCalculator) map.get(PROBABILITIES_CALCULATOR);
-        trainingOption = (Boolean) map.get(TRAINING_OPTION);
-        trainingOptionExpressionExecutor = (ExpressionExecutor) map.get(TRAINING_OPTION_EXPRESSION_EXECUTOR);
-        lastScheduledTime = (Long) map.get(LAST_SCHEDULED_TIME);
+        synchronized (this) {
+            markovChainTransitionProbabilitiesCalculator =
+                    (MarkovChainTransitionProbabilitiesCalculator) map.get(PROBABILITIES_CALCULATOR);
+            trainingOption = (Boolean) map.get(TRAINING_OPTION);
+            trainingOptionExpressionExecutor = (ExpressionExecutor) map.get(TRAINING_OPTION_EXPRESSION_EXECUTOR);
+            lastScheduledTime = (Long) map.get(LAST_SCHEDULED_TIME);
+        }
     }
 
     @Override
     public Scheduler getScheduler() {
-        return this.scheduler;
+        synchronized (this) {
+            return this.scheduler;
+        }
     }
 
     @Override
     public void setScheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
+        synchronized (this) {
+            this.scheduler = scheduler;
+        }
     }
 
     private enum TrainingMode {
