@@ -259,9 +259,6 @@
                             <phase>none</phase>
                         </execution>
                     </executions>
-                    <!--<configuration>-->
-                        <!--<skip>true</skip>-->
-                    <!--</configuration>-->
                 </plugin>
             </plugins>
         </pluginManagement>
