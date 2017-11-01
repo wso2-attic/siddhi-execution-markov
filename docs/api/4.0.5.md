@@ -1,0 +1,103 @@
+# API Docs - v4.0.5
+
+## Markov
+
+### markovChain *<a target="_blank" href="https://wso2.github.io/siddhi/documentation/siddhi-4.0/#stream-processor">(Stream Processor)</a>*
+
+<p style="word-wrap: break-word">The Markov Models extension allows abnormal patterns relating to user activity to be detected when carrying out real time analysis. There are two approaches for using this extension.1. You can input an existing Markov matrix as a csv file. It should be a N x N matrix,    and the first row should include state names.2. You can use a reasonable amount of incoming data to train a Markov matrix and then using it to   create notifications.</p>
+
+<span id="syntax" class="md-typeset" style="display: block; font-weight: bold;">Syntax</span>
+```
+markov:markovChain(<STRING> id, <STRING> state, <INT|LONG> duration.to.keep, <DOUBLE> alert.threshold, <INT|LONG|STRING> matrix.location.or.notifications.limit, <BOOL> train)
+```
+
+<span id="query-parameters" class="md-typeset" style="display: block; color: rgba(0, 0, 0, 0.54); font-size: 12.8px; font-weight: bold;">QUERY PARAMETERS</span>
+<table>
+    <tr>
+        <th>Name</th>
+        <th style="min-width: 20em">Description</th>
+        <th>Default Value</th>
+        <th>Possible Data Types</th>
+        <th>Optional</th>
+        <th>Dynamic</th>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">id</td>
+        <td style="vertical-align: top; word-wrap: break-word">The ID of the particular user or object being analyzed.</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">STRING</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">state</td>
+        <td style="vertical-align: top; word-wrap: break-word">The current state of the ID.</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">STRING</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">duration.to.keep</td>
+        <td style="vertical-align: top; word-wrap: break-word">The maximum time duration to be considered for a continuous state change of a particular ID.</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">INT<br>LONG</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">alert.threshold</td>
+        <td style="vertical-align: top; word-wrap: break-word">The alert threshold probability.</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">DOUBLE</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">matrix.location.or.notifications.limit</td>
+        <td style="vertical-align: top; word-wrap: break-word">The location of the CSV file that contains the existing Markov matrix to be used (string) or the notifications hold limit (int/long)</td>
+        <td style="vertical-align: top"></td>
+        <td style="vertical-align: top">INT<br>LONG<br>STRING</td>
+        <td style="vertical-align: top">No</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">train</td>
+        <td style="vertical-align: top; word-wrap: break-word">If this is set to true, event values are used to train the Markov matrix. If this is set to false, the Markov matrix values remain the same.</td>
+        <td style="vertical-align: top">true</td>
+        <td style="vertical-align: top">BOOL</td>
+        <td style="vertical-align: top">Yes</td>
+        <td style="vertical-align: top">No</td>
+    </tr>
+</table>
+<span id="extra-return-attributes" class="md-typeset" style="display: block; font-weight: bold;">Extra Return Attributes</span>
+<table>
+    <tr>
+        <th>Name</th>
+        <th style="min-width: 20em">Description</th>
+        <th>Possible Types</th>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">lastState</td>
+        <td style="vertical-align: top; word-wrap: break-word">The previous state of the particular ID.</td>
+        <td style="vertical-align: top">STRING</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">transitionProbability</td>
+        <td style="vertical-align: top; word-wrap: break-word">The transition probability between the previous state and the current state for a particular ID.</td>
+        <td style="vertical-align: top">DOUBLE</td>
+    </tr>
+    <tr>
+        <td style="vertical-align: top">notify</td>
+        <td style="vertical-align: top; word-wrap: break-word">This signifies a notification that indicates that the transition probability is less than or equal to the alert threshold probability.</td>
+        <td style="vertical-align: top">BOOL</td>
+    </tr>
+</table>
+
+<span id="examples" class="md-typeset" style="display: block; font-weight: bold;">Examples</span>
+<span id="example-1" class="md-typeset" style="display: block; color: rgba(0, 0, 0, 0.54); font-size: 12.8px; font-weight: bold;">EXAMPLE 1</span>
+```
+markov:markovChain(<String> id, <String> state, <int|long|time> durationToKeep, <double> alertThreshold, <String> markovMatrixStorageLocation, <boolean> train)
+```
+<p style="word-wrap: break-word">The following returns notifications to indicate whether a transition probability is less than or equal to 0.2 according to the Markov matrix you have provided. <br>define stream InputStream (id string, state string);<br>from InputStream#markov:markovChain(id, state, 60 min, 0.2, "markovMatrixStorageLocation", false)<br>select id, lastState, state, transitionProbability, notify<br>insert into OutputStream;</p>
+

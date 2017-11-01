@@ -27,7 +27,7 @@
 
     <groupId>org.wso2.extension.siddhi.execution.markov</groupId>
     <artifactId>siddhi-execution-markov-parent</artifactId>
-    <version>4.0.5-SNAPSHOT</version>
+    <version>4.0.6-SNAPSHOT</version>
     <name>Siddhi Execution Markov Models Extension Parent</name>
     <url>http://wso2.org</url>
     <packaging>pom</packaging>
