@@ -11,7 +11,7 @@ Find some useful links below:
 
 ## Latest API Docs 
 
-Latest API Docs is <a target="_blank" href="https://wso2-extensions.github.io/siddhi-execution-markov/api/4.0.14">4.0.14</a>.
+Latest API Docs is <a target="_blank" href="https://wso2-extensions.github.io/siddhi-execution-markov/api/4.0.15">4.0.15</a>.
 
 ## How to use 
 
@@ -45,7 +45,7 @@ Latest API Docs is <a target="_blank" href="https://wso2-extensions.github.io/si
 
 ## Features
 
-* <a target="_blank" href="https://wso2-extensions.github.io/siddhi-execution-markov/api/4.0.14/#markovchain-stream-processor">markovChain</a> *<a target="_blank" href="https://wso2.github.io/siddhi/documentation/siddhi-4.0/#stream-processor">(Stream Processor)</a>*<br><div style="padding-left: 1em;"><p>The Markov Models extension allows abnormal patterns relating to user activity to be detected when carrying out real time analysis. There are two approaches for using this extension.1. You can input an existing Markov matrix as a csv file. It should be a N x N matrix,    and the first row should include state names.2. You can use a reasonable amount of incoming data to train a Markov matrix and then using it to   create notifications.</p></div>
+* <a target="_blank" href="https://wso2-extensions.github.io/siddhi-execution-markov/api/4.0.15/#markovchain-stream-processor">markovChain</a> *<a target="_blank" href="https://wso2.github.io/siddhi/documentation/siddhi-4.0/#stream-processor">(Stream Processor)</a>*<br><div style="padding-left: 1em;"><p>The Markov Models extension allows abnormal patterns relating to user activity to be detected when carrying out real time analysis. There are two approaches for using this extension.1. You can input an existing Markov matrix as a csv file. It should be a N x N matrix,    and the first row should include state names.2. You can use a reasonable amount of incoming data to train a Markov matrix and then using it to   create notifications.</p></div>
 
 ## How to Contribute
  
