@@ -59,15 +59,15 @@ import java.util.Map;
         name = "markovChain",
         namespace = "markov",
         description = "The Markov Models extension allows abnormal patterns relating to user activity to be detected " +
-                "when carrying out real time analysis. There are two approaches for using this extension." +
-                "1. You can input an existing Markov matrix as a csv file. It should be a N x N matrix, " +
-                "   and the first row should include state names." +
-                "2. You can use a reasonable amount of incoming data to train a Markov matrix and then using it to" +
-                "   create notifications.",
+                "when carrying out real time analysis. There are two approaches to using this extension.\n" +
+                "1. Input an existing Markov matrix as a csv file. It should be an N x N matrix " +
+                "and the first row should include state names." +
+                "2. Use a reasonable amount of incoming data to train a Markov matrix and then use it to" +
+                "   create further notifications.",
         parameters = {
                 @Parameter(
                         name = "id",
-                        description = "The ID of the particular user or object being analyzed.",
+                        description = "The ID of the particular user or object that needs to be analyzed.",
                         type = {DataType.STRING}
                 ),
                 @Parameter(
@@ -88,14 +88,15 @@ import java.util.Map;
                 ),
                 @Parameter(
                         name = "matrix.location.or.notifications.limit",
-                        description = "The location of the CSV file that contains the existing Markov " +
-                                "matrix to be used (string) or the notifications hold limit (int/long)",
+                        description = "The location of the CSV file that contains, the existing Markov " +
+                                "matrix to be used which is of 'String' type or the notifications hold limit " +
+                                "which is of either 'int' or 'long' type.",
                         type = {DataType.INT, DataType.LONG, DataType.STRING}
                 ),
                 @Parameter(
                         name = "train",
-                        description = "If this is set to true, event values are used to train the Markov matrix. " +
-                                "If this is set to false, the Markov matrix values remain the same.",
+                        description = "If this is set to 'true', event values are used to train the Markov matrix. " +
+                                "If this is set to 'false', the Markov matrix values remain the same.",
                         type = {DataType.BOOL},
                         defaultValue = "true",
                         optional = true
@@ -121,17 +122,19 @@ import java.util.Map;
                 )
         },
         examples = {
-                @Example(syntax = "markov:markovChain(<String> id, <String> state, <int|long|time> durationToKeep, " +
-                        "<double> alertThreshold, <String> markovMatrixStorageLocation, <boolean> train)",
-                        description = "The following returns notifications to indicate whether a transition " +
-                                "probability is less than or equal to 0.2 according to the Markov matrix you have" +
-                                " provided. " +
-                                "\n" +
-                                "define stream InputStream (id string, state string);\n" +
+                @Example(syntax = "define stream InputStream (id string, state string);\n" +
                                 "from InputStream#markov:markovChain(id, state, 60 min, 0.2, " +
                                 "\"markovMatrixStorageLocation\", false)\n" +
                                 "select id, lastState, state, transitionProbability, notify\n" +
-                                "insert into OutputStream;"
+                                "insert into OutputStream;",
+                        description = "The function returns a notification to the 'OutputStream' along with the id, " +
+                                "its previous state, current state and the transition probability," +
+                                " when a transition probability between the previous state and the " +
+                                "current state is less than or equal " +
+                                "to 0.2. The 'transitionProbability' is based on the Markov matrix that is already " +
+                                "provided since 'false' indicates that the event values are not used to train" +
+                                "the matrix.\n"
+
                 )
         }
 )
