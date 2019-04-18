@@ -18,8 +18,8 @@
 
 package org.wso2.extension.siddhi.execution.markov;
 
+import io.siddhi.core.exception.OperationNotSupportedException;
 import org.apache.log4j.Logger;
-import org.wso2.siddhi.core.exception.OperationNotSupportedException;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
