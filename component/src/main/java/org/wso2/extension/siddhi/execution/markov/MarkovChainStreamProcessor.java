@@ -18,27 +18,32 @@
 
 package org.wso2.extension.siddhi.execution.markov;
 
-import org.wso2.siddhi.annotation.Example;
-import org.wso2.siddhi.annotation.Extension;
-import org.wso2.siddhi.annotation.Parameter;
-import org.wso2.siddhi.annotation.ReturnAttribute;
-import org.wso2.siddhi.annotation.util.DataType;
-import org.wso2.siddhi.core.config.SiddhiAppContext;
-import org.wso2.siddhi.core.event.ComplexEvent;
-import org.wso2.siddhi.core.event.ComplexEventChunk;
-import org.wso2.siddhi.core.event.stream.StreamEvent;
-import org.wso2.siddhi.core.event.stream.StreamEventCloner;
-import org.wso2.siddhi.core.event.stream.populater.ComplexEventPopulater;
-import org.wso2.siddhi.core.executor.ConstantExpressionExecutor;
-import org.wso2.siddhi.core.executor.ExpressionExecutor;
-import org.wso2.siddhi.core.query.processor.Processor;
-import org.wso2.siddhi.core.query.processor.SchedulingProcessor;
-import org.wso2.siddhi.core.query.processor.stream.StreamProcessor;
-import org.wso2.siddhi.core.util.Scheduler;
-import org.wso2.siddhi.core.util.config.ConfigReader;
-import org.wso2.siddhi.query.api.definition.AbstractDefinition;
-import org.wso2.siddhi.query.api.definition.Attribute;
-import org.wso2.siddhi.query.api.exception.SiddhiAppValidationException;
+import io.siddhi.annotation.Example;
+import io.siddhi.annotation.Extension;
+import io.siddhi.annotation.Parameter;
+import io.siddhi.annotation.ReturnAttribute;
+import io.siddhi.annotation.util.DataType;
+import io.siddhi.core.config.SiddhiQueryContext;
+import io.siddhi.core.event.ComplexEvent;
+import io.siddhi.core.event.ComplexEventChunk;
+import io.siddhi.core.event.stream.MetaStreamEvent;
+import io.siddhi.core.event.stream.StreamEvent;
+import io.siddhi.core.event.stream.StreamEventCloner;
+import io.siddhi.core.event.stream.holder.StreamEventClonerHolder;
+import io.siddhi.core.event.stream.populater.ComplexEventPopulater;
+import io.siddhi.core.executor.ConstantExpressionExecutor;
+import io.siddhi.core.executor.ExpressionExecutor;
+import io.siddhi.core.query.processor.ProcessingMode;
+import io.siddhi.core.query.processor.Processor;
+import io.siddhi.core.query.processor.SchedulingProcessor;
+import io.siddhi.core.query.processor.stream.StreamProcessor;
+import io.siddhi.core.util.Scheduler;
+import io.siddhi.core.util.config.ConfigReader;
+import io.siddhi.core.util.snapshot.state.State;
+import io.siddhi.core.util.snapshot.state.StateFactory;
+import io.siddhi.query.api.definition.AbstractDefinition;
+import io.siddhi.query.api.definition.Attribute;
+import io.siddhi.query.api.exception.SiddhiAppValidationException;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -138,7 +143,8 @@ import java.util.Map;
                 )
         }
 )
-public class MarkovChainStreamProcessor extends StreamProcessor implements SchedulingProcessor {
+public class MarkovChainStreamProcessor
+        extends StreamProcessor<MarkovChainStreamProcessor.ExtensionState> implements SchedulingProcessor {
 
     private static final String PROBABILITIES_CALCULATOR = "PROBABILITIES_CALCULATOR";
     private static final String TRAINING_OPTION = "TRAINING_OPTION";
@@ -153,10 +159,79 @@ public class MarkovChainStreamProcessor extends StreamProcessor implements Sched
     private MarkovChainTransitionProbabilitiesCalculator markovChainTransitionProbabilitiesCalculator;
     private long lastScheduledTime;
 
+    private List<Attribute> attributes;
     @Override
-    protected List<Attribute> init(AbstractDefinition abstractDefinition, ExpressionExecutor[] expressionExecutors,
-                                   ConfigReader configReader, SiddhiAppContext siddhiAppContext) {
+    public void start() {
+    }
 
+    @Override
+    public void stop() {
+    }
+
+    @Override
+    public Scheduler getScheduler() {
+        synchronized (this) {
+            return this.scheduler;
+        }
+    }
+
+    @Override
+    public void setScheduler(Scheduler scheduler) {
+        synchronized (this) {
+            this.scheduler = scheduler;
+        }
+    }
+
+    @Override
+    protected void process(ComplexEventChunk<StreamEvent> complexEventChunk,
+                           Processor processor,
+                           StreamEventCloner streamEventCloner,
+                           ComplexEventPopulater complexEventPopulater,
+                           ExtensionState extensionState) {
+        synchronized (this) {
+            while (complexEventChunk.hasNext()) {
+                StreamEvent streamEvent = complexEventChunk.next();
+
+                if (streamEvent.getType() == ComplexEvent.Type.TIMER) {
+                    markovChainTransitionProbabilitiesCalculator.removeExpiredEvents(
+                                    siddhiQueryContext.getSiddhiAppContext().getTimestampGenerator().currentTime());
+                    continue;
+                } else if (streamEvent.getType() != ComplexEvent.Type.CURRENT) {
+                    continue;
+                }
+                lastScheduledTime = siddhiQueryContext
+                        .getSiddhiAppContext().getTimestampGenerator().currentTime() + durationToKeep;
+                if (scheduler != null) {
+                    scheduler.notifyAt(lastScheduledTime);
+                }
+                if (trainingOptionExpressionExecutor != null) {
+                    trainingOption = (Boolean) attributeExpressionExecutors[5].execute(streamEvent);
+                }
+                String id = (String) attributeExpressionExecutors[0].execute(streamEvent);
+                String state = (String) attributeExpressionExecutors[1].execute(streamEvent);
+                Object[] outputData = markovChainTransitionProbabilitiesCalculator.processData(id, state,
+                        trainingOption);
+
+                if (outputData == null) {
+                    complexEventChunk.remove();
+                } else {
+                    complexEventPopulater.populateComplexEvent(streamEvent, outputData);
+                }
+            }
+        }
+        nextProcessor.process(complexEventChunk);
+
+    }
+
+    @Override
+    protected StateFactory<ExtensionState> init(MetaStreamEvent metaStreamEvent,
+                                                AbstractDefinition abstractDefinition,
+                                                ExpressionExecutor[] attributeExpressionExecutors,
+                                                ConfigReader configReader,
+                                                StreamEventClonerHolder streamEventClonerHolder,
+                                                boolean b1,
+                                                boolean b2,
+                                                SiddhiQueryContext siddhiQueryContext) {
         if (!(attributeExpressionExecutors.length == 5 || attributeExpressionExecutors.length == 6)) {
             throw new SiddhiAppValidationException(
                     "Markov chain function has to have exactly 5 or 6 parameters, currently "
@@ -244,100 +319,57 @@ public class MarkovChainStreamProcessor extends StreamProcessor implements Sched
                     durationToKeep, alertThresholdProbability, notificationsHoldLimit);
         }
 
-        List<Attribute> attributeList = new ArrayList<Attribute>(3);
-        attributeList.add(new Attribute("lastState", Attribute.Type.STRING));
-        attributeList.add(new Attribute("transitionProbability", Attribute.Type.DOUBLE));
-        attributeList.add(new Attribute("notify", Attribute.Type.BOOL));
-        return attributeList;
+        attributes = new ArrayList<Attribute>(3);
+        attributes.add(new Attribute("lastState", Attribute.Type.STRING));
+        attributes.add(new Attribute("transitionProbability", Attribute.Type.DOUBLE));
+        attributes.add(new Attribute("notify", Attribute.Type.BOOL));
+
+        return () -> new ExtensionState();
     }
 
     @Override
-    protected void process(ComplexEventChunk<StreamEvent> streamEventChunk, Processor nextProcessor,
-                           StreamEventCloner streamEventCloner, ComplexEventPopulater complexEventPopulater) {
-
-        synchronized (this) {
-            while (streamEventChunk.hasNext()) {
-                StreamEvent streamEvent = streamEventChunk.next();
-
-                if (streamEvent.getType() == ComplexEvent.Type.TIMER) {
-                    markovChainTransitionProbabilitiesCalculator
-                            .removeExpiredEvents(siddhiAppContext.getTimestampGenerator().currentTime());
-                    continue;
-                } else if (streamEvent.getType() != ComplexEvent.Type.CURRENT) {
-                    continue;
-                }
-                lastScheduledTime = siddhiAppContext.getTimestampGenerator().currentTime() + durationToKeep;
-                if (scheduler != null) {
-                    scheduler.notifyAt(lastScheduledTime);
-                }
-                if (trainingOptionExpressionExecutor != null) {
-                    trainingOption = (Boolean) attributeExpressionExecutors[5].execute(streamEvent);
-                }
-                String id = (String) attributeExpressionExecutors[0].execute(streamEvent);
-                String state = (String) attributeExpressionExecutors[1].execute(streamEvent);
-                Object[] outputData = markovChainTransitionProbabilitiesCalculator.processData(id, state,
-                        trainingOption);
-
-                if (outputData == null) {
-                    streamEventChunk.remove();
-                } else {
-                    complexEventPopulater.populateComplexEvent(streamEvent, outputData);
-                }
-            }
-        }
-        nextProcessor.process(streamEventChunk);
+    public List<Attribute> getReturnAttributes() {
+        return attributes;
     }
 
     @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public Map<String, Object> currentState() {
-        synchronized (this) {
-            Map<String, Object> state = new HashMap<>(4);
-            state.put(PROBABILITIES_CALCULATOR, markovChainTransitionProbabilitiesCalculator);
-            state.put(TRAINING_OPTION, trainingOption);
-            state.put(TRAINING_OPTION_EXPRESSION_EXECUTOR, trainingOptionExpressionExecutor);
-            state.put(LAST_SCHEDULED_TIME, lastScheduledTime);
-
-            return state;
-        }
-    }
-
-    @Override
-    public void restoreState(Map<String, Object> map) {
-        synchronized (this) {
-            markovChainTransitionProbabilitiesCalculator =
-                    (MarkovChainTransitionProbabilitiesCalculator) map.get(PROBABILITIES_CALCULATOR);
-            trainingOption = (Boolean) map.get(TRAINING_OPTION);
-            trainingOptionExpressionExecutor = (ExpressionExecutor) map.get(TRAINING_OPTION_EXPRESSION_EXECUTOR);
-            lastScheduledTime = (Long) map.get(LAST_SCHEDULED_TIME);
-        }
-    }
-
-    @Override
-    public Scheduler getScheduler() {
-        synchronized (this) {
-            return this.scheduler;
-        }
-    }
-
-    @Override
-    public void setScheduler(Scheduler scheduler) {
-        synchronized (this) {
-            this.scheduler = scheduler;
-        }
+    public ProcessingMode getProcessingMode() {
+        return ProcessingMode.BATCH;
     }
 
     private enum TrainingMode {
         PREDEFINED_MATRIX, REAL_TIME
     }
 
+    class ExtensionState extends State {
+
+        @Override
+        public boolean canDestroy() {
+            return false;
+        }
+
+        @Override
+        public Map<String, Object> snapshot() {
+            synchronized (MarkovChainStreamProcessor.this) {
+                Map<String, Object> state = new HashMap<>(4);
+                state.put(PROBABILITIES_CALCULATOR, markovChainTransitionProbabilitiesCalculator);
+                state.put(TRAINING_OPTION, trainingOption);
+                state.put(TRAINING_OPTION_EXPRESSION_EXECUTOR, trainingOptionExpressionExecutor);
+                state.put(LAST_SCHEDULED_TIME, lastScheduledTime);
+
+                return state;
+            }
+        }
+
+        @Override
+        public void restore(Map<String, Object> map) {
+            synchronized (MarkovChainStreamProcessor.this) {
+                markovChainTransitionProbabilitiesCalculator =
+                        (MarkovChainTransitionProbabilitiesCalculator) map.get(PROBABILITIES_CALCULATOR);
+                trainingOption = (Boolean) map.get(TRAINING_OPTION);
+                trainingOptionExpressionExecutor = (ExpressionExecutor) map.get(TRAINING_OPTION_EXPRESSION_EXECUTOR);
+                lastScheduledTime = (Long) map.get(LAST_SCHEDULED_TIME);
+            }
+        }
+    }
 }
