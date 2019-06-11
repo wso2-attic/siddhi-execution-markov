@@ -191,7 +191,6 @@ public class MarkovChainStreamProcessor
         synchronized (this) {
             while (complexEventChunk.hasNext()) {
                 StreamEvent streamEvent = complexEventChunk.next();
-
                 if (streamEvent.getType() == ComplexEvent.Type.TIMER) {
                     markovChainTransitionProbabilitiesCalculator.removeExpiredEvents(
                                     siddhiQueryContext.getSiddhiAppContext().getTimestampGenerator().currentTime());
@@ -199,10 +198,11 @@ public class MarkovChainStreamProcessor
                 } else if (streamEvent.getType() != ComplexEvent.Type.CURRENT) {
                     continue;
                 }
-                lastScheduledTime = siddhiQueryContext
+                long nextScheduledTime = siddhiQueryContext
                         .getSiddhiAppContext().getTimestampGenerator().currentTime() + durationToKeep;
-                if (scheduler != null) {
-                    scheduler.notifyAt(lastScheduledTime);
+                if (scheduler != null && nextScheduledTime > lastScheduledTime) {
+                    scheduler.notifyAt(nextScheduledTime);
+                    lastScheduledTime = nextScheduledTime;
                 }
                 if (trainingOptionExpressionExecutor != null) {
                     trainingOption = (Boolean) attributeExpressionExecutors[5].execute(streamEvent);
@@ -220,7 +220,6 @@ public class MarkovChainStreamProcessor
             }
         }
         nextProcessor.process(complexEventChunk);
-
     }
 
     @Override
